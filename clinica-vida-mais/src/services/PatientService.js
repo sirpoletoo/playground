@@ -9,7 +9,79 @@ class PatientService {
   constructor() {
     this.patientRepository = new PatientRepository();
   }
+  
+  validate(patientData) {
+    const errors = [];
 
+    // Validação do nome
+    if (
+      !patientData.nome ||
+      typeof patientData.nome !== "string" ||
+      patientData.nome.trim().length === 0
+    ) {
+      errors.push("Nome é obrigatório e deve ser uma string válida");
+    } else if (patientData.nome.trim().length < 2) {
+      errors.push("Nome deve ter pelo menos 2 caracteres");
+    }
+
+    // Validação da idade
+    if (
+      !patientData.idade ||
+      typeof patientData.idade !== "number" ||
+      !Number.isInteger(patientData.idade)
+    ) {
+      errors.push("Idade é obrigatória e deve ser um número inteiro");
+    } else if (patientData.idade < 0 || patientData.idade > 150) {
+      errors.push("Idade deve estar entre 0 e 150 anos");
+    }
+
+    // Validação do gênero
+    const generosValidos = ["masculino", "feminino", "outro", "não informado"];
+    if (
+      !patientData.genero ||
+      !generosValidos.includes(patientData.genero.toLowerCase())
+    ) {
+      errors.push(
+        `Gênero deve ser um dos seguintes: ${generosValidos.join(", ")}`
+      );
+    }
+
+    // Validação do telefone
+    if (!patientData.telefone || typeof patientData.telefone !== "string") {
+      errors.push("Telefone é obrigatório");
+    } else {
+      // Remove caracteres não numéricos para validação
+      const telefoneNumerico = patientData.telefone.replace(/\D/g, "");
+      if (telefoneNumerico.length < 10 || telefoneNumerico.length > 11) {
+        errors.push("Telefone deve ter 10 ou 11 dígitos");
+      }
+    }
+
+    // Validação do email
+    if (!patientData.email || typeof patientData.email !== "string") {
+      errors.push("Email é obrigatório");
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(patientData.email)) {
+        errors.push("Email deve ter um formato válido");
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  sanitize(patientData) {
+    return {
+      nome: patientData.nome ? patientData.nome.trim() : "",
+      idade: patientData.idade ? parseInt(patientData.idade) : null,
+      genero: patientData.genero ? patientData.genero.toLowerCase().trim() : "",
+      telefone: patientData.telefone ? patientData.telefone.trim() : "",
+      email: patientData.email ? patientData.email.trim() : "",
+    };
+  }
   /**
    * Cadastra um novo paciente
    * @param {Object} patientData - Dados do paciente
@@ -18,10 +90,10 @@ class PatientService {
   async createPatient(patientData) {
     try {
       // 1. Sanitizar os dados de entrada
-      const sanitizedData = Patient.sanitize(patientData);
+      const sanitizedData = this.sanitize(patientData);
 
       // 2. Validar os dados sanitizados
-      const validation = Patient.validate(sanitizedData);
+      const validation = this.validate(sanitizedData);
       if (!validation.isValid) {
         return {
           success: false,
