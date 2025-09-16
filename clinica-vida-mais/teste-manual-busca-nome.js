@@ -1,26 +1,28 @@
 /**
- * Exemplo de teste para o endpoint de listagem de pacientes
- * Execute este arquivo com: node exemplo-teste.js
+ * Exemplo de teste para o endpoint de busca de pacientes por nome
+ * Execute este arquivo com: node teste-manual-busca-nome.js
  * IMPORTANTE: Certifique-se de que o servidor está rodando antes de executar este teste
  */
 
 const http = require("http");
 
-// Dados de exemplo para testar a listagem dos pacientes
-
+// Nome para buscar. Altere este valor para testar diferentes buscas.
+const nomeParaBuscar = "Maria";
 
 // Configuração da requisição
 const options = {
   hostname: "localhost",
   port: 3000,
-  path: "/api/patients",
+  // Codifica o nome para ser usado na URL de forma segura
+  path: `/api/patients/search?nome=${encodeURIComponent(nomeParaBuscar)}`,
   method: "GET",
   headers: {
     "Content-Type": "application/json",
   },
 };
 
-console.log("🧪 Iniciando teste do endpoint de listagem...");
+console.log("🧪 Iniciando teste do endpoint de busca por nome...");
+console.log(`🔎 Buscando por pacientes com o nome: "${nomeParaBuscar}"`);
 console.log("\n⏳ Enviando requisição...\n");
 
 // Fazer a requisição
@@ -50,12 +52,10 @@ const req = http.request(options, (res) => {
 // Tratar erros de conexão
 req.on("error", (error) => {
   console.log("\n❌ ERRO DE CONEXÃO:");
-  console.log(
-    "Certifique-se de que o servidor está rodando em http://localhost:3000"
-  );
+  console.log("Certifique-se de que o servidor está rodando em http://localhost:3000");
   console.log("Execute: npm start");
   console.log("Erro:", error.message);
 });
 
-// Enviar os dados
+// Enviar a requisição
 req.end();

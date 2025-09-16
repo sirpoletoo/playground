@@ -21,11 +21,11 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * GET /api/patients/:id
- * Busca um paciente específico por ID
+ * GET /api/patients/search
+ * Busca pacientes por nome
  */
-router.get("/:id", async (req, res) => {
-  await patientController.getPatientById(req, res);
+router.get("/search", async (req, res) => {
+  await patientController.searchPatientsByName(req, res);
 });
 
 /**
@@ -37,11 +37,12 @@ router.get("/", async (req, res) => {
 });
 
 /**
- * GET /api/patients/search
- * Busca pacientes por nome
+ * GET /api/patients/:id
+ * Busca um paciente específico por ID
+ * IMPORTANTE: Esta rota deve ser declarada após as rotas mais específicas como '/search'.
  */
-router.get("/search", async (req, res) => {
-  await patientController.searchPatientsByName(req, res);
+router.get("/:id", async (req, res) => {
+  await patientController.getPatientById(req, res);
 });
 
 module.exports = router;
