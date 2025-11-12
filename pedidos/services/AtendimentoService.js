@@ -45,7 +45,7 @@ class AtendimentoService {
             }
         }
         // Resposta padrão se a palavra "pedido" não for encontrada
-                const resposta = "Olá! Como posso ajudar? Se quiser saber sobre um pedido, me diga o número dele.";
+                const resposta = "Olá! Como posso ajudar? Se quiser saber sobre um pedido, me diga o número dele. (ex: pedido 1001)";
                 return { resposta, sessionId };
             }
         }
