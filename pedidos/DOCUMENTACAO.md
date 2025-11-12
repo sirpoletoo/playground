@@ -345,6 +345,14 @@ node server.js
 node teste-manual-atendimento.js
 ```
 
+## Teste - Services
+
+Testar o AtendimentoService
+Rodar "npm install --save-dev jest" no git bash
+Para testar, use: npm test
+Como só tem um teste por enquanto, não precisamos especificar o teste no comando. 
+
+
 ### Modificar Cenários de Teste
 
 Edite o arquivo `teste-manual-atendimento.js` e descomente o cenário desejado:
